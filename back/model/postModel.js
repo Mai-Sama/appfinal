@@ -10,7 +10,7 @@ class PostModel {
         };
 
         if (postData.archivo_url) {
-            insertData.archivo_url = postData.archivo_url;
+            insertData.archivo_adjunto_url = postData.archivo_url;
         }
 
         const { data, error } = await supabase
@@ -44,6 +44,7 @@ static async getByClass(claseId) {
 
         const anuncios = (anunciosRes.data || []).map(a => ({
             ...a,
+            archivo_url: a.archivo_adjunto_url || a.archivo_url || null,
             tipo: 'anuncio',
             fecha_orden: a.fecha_publicacion || a.created_at 
         }));
