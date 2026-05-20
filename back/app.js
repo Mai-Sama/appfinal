@@ -11,6 +11,7 @@ const assignmentRoutes = require('./routes/assigmentRoutes');
 const unitsRoutes = require('./routes/unitsRoutes');
 const rubricRoutes = require('./routes/rubricRoutes');
 const postRoutes = require('./routes/postRoutes');
+const supportRoutes = require('./routes/supportRoutes');
 const PostModel = require('./model/postModel');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -42,7 +43,7 @@ app.use('/api/assignments', authenticateToken, assignmentRoutes);
 app.use('/api/units', authenticateToken, unitsRoutes);
 app.use('/api/rubrics', authenticateToken, rubricRoutes);
 app.use('/api/posts', authenticateToken, postRoutes);
-
+app.use('/api/support', authenticateToken, supportRoutes);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../front/views/index.html'));

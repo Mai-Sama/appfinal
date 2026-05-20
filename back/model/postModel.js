@@ -2,14 +2,20 @@ const supabase = require('../config/db');
 
 class PostModel {
     static async create(postData) {
+        const insertData = {
+            clase_id: postData.clase_id,
+            autor_id: postData.autor_id,
+            contenido: postData.contenido,
+            fecha_publicacion: new Date()
+        };
+
+        if (postData.archivo_url) {
+            insertData.archivo_url = postData.archivo_url;
+        }
+
         const { data, error } = await supabase
             .from('anuncios')
-            .insert([{
-                clase_id: postData.clase_id,
-                autor_id: postData.autor_id,
-                contenido: postData.contenido,
-                fecha_publicacion: new Date() 
-            }])
+            .insert([insertData])
             .select();
         return { data, error };
     }

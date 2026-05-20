@@ -42,9 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     sidebarLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            e.preventDefault();
-            
             const section = this.getAttribute('data-section');
+            if (!section) {
+                return;
+            }
+
+            e.preventDefault();
             
             sidebarLinks.forEach(l => l.classList.remove('active'));
             this.classList.add('active');

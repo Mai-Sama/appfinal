@@ -1,23 +1,31 @@
 async function createPost(claseId) {
     const contenido = document.getElementById('postContent')?.value.trim();
+    const archivoInput = document.getElementById('postFile');
 
     if (!validateNotEmpty(contenido, 'El contenido')) return;
 
     showLoading('Publicando anuncio', 'Por favor espere...');
 
     try {
+        const formData = new FormData();
+        formData.append('contenido', contenido);
+        formData.append('clase_id', claseId);
+        if (archivoInput?.files?.length > 0) {
+            formData.append('archivo', archivoInput.files[0]);
+        }
+
         const response = await fetch('/api/posts', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ contenido, clase_id: claseId })
+            body: formData
         });
 
         if (response.ok) {
             await showSuccess('¡Anuncio publicado!', 'El anuncio ha sido publicado correctamente');
             location.reload();
         } else {
-            showError('Error al publicar', 'No se pudo publicar el anuncio');
+            const errorData = await response.json().catch(() => null);
+            showError('Error al publicar', errorData?.error || 'No se pudo publicar el anuncio');
         }
     } catch (error) {
         showError('Error de conexión', 'No se pudo conectar con el servidor');
