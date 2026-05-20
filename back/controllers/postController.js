@@ -11,7 +11,7 @@ exports.createPost = async (req, res) => {
         }
 
         const autor_id = user.id;
-        let archivo_url = null;
+        let archivo_adjunto_url = null;
 
         if (req.file) {
             try {
@@ -27,7 +27,7 @@ exports.createPost = async (req, res) => {
                     console.warn('No se pudo subir archivo del anuncio:', uploadError.message);
                 } else {
                     const { data: publicUrlData } = supabase.storage.from('anuncios').getPublicUrl(fileName);
-                    archivo_url = publicUrlData?.publicUrl || publicUrlData?.publicURL || `${process.env.SUPABASE_URL}/storage/v1/object/public/anuncios/${fileName}`;
+                    archivo_adjunto_url = publicUrlData?.publicUrl || publicUrlData?.publicURL || `${process.env.SUPABASE_URL}/storage/v1/object/public/anuncios/${fileName}`;
                 }
             } catch (uploadErr) {
                 console.warn('Error al subir archivo del anuncio:', uploadErr.message);
@@ -38,7 +38,7 @@ exports.createPost = async (req, res) => {
             contenido,
             clase_id,
             autor_id,
-            archivo_url
+            archivo_adjunto_url
         });
 
         if (error) {

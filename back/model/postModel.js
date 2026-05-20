@@ -9,8 +9,8 @@ class PostModel {
             fecha_publicacion: new Date()
         };
 
-        if (postData.archivo_url) {
-            insertData.archivo_adjunto_url = postData.archivo_url;
+        if (postData.archivo_adjunto_url) {
+            insertData.archivo_adjunto_url = postData.archivo_adjunto_url;
         }
 
         const { data, error } = await supabase
