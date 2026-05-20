@@ -14,6 +14,19 @@ class SupportModel {
             .select();
         return { data, error };
     }
+
+    static async getByUser(userId) {
+        try {
+            const { data, error } = await supabase
+                .from('reportes_soporte')
+                .select('*')
+                .eq('usuario_id', userId)
+                .order('fecha_creacion', { ascending: false });
+            return { data, error };
+        } catch (err) {
+            return { data: null, error: err };
+        }
+    }
 }
 
 module.exports = SupportModel;

@@ -27,7 +27,7 @@ exports.createPost = async (req, res) => {
                     console.warn('No se pudo subir archivo del anuncio:', uploadError.message);
                 } else {
                     const { data: publicUrlData } = supabase.storage.from('anuncios').getPublicUrl(fileName);
-                    archivo_url = publicUrlData.publicUrl;
+                    archivo_url = publicUrlData?.publicUrl || publicUrlData?.publicURL || `${process.env.SUPABASE_URL}/storage/v1/object/public/anuncios/${fileName}`;
                 }
             } catch (uploadErr) {
                 console.warn('Error al subir archivo del anuncio:', uploadErr.message);

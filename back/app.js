@@ -666,6 +666,10 @@ app.get('/clase/:id/personas', authenticateToken, async (req, res) => {
 app.get('/perfil', authenticateToken, (req, res) => {
     res.render('perfil', { user: req.user || req.session?.user || {} });
 });
+
+app.get('/mis-reportes', authenticateToken, (req, res) => {
+    res.render('support_reports', { user: req.user || req.session?.user || {} });
+});
 app.get('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {

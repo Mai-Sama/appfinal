@@ -61,13 +61,11 @@
             <li><a href="/dashboard" class="sidebar-link active"><i class="fa-solid fa-graduation-cap me-3"></i>Mis clases</a></li>
             <li><a href="/clase/<%= clase.id %>/tareas" class="sidebar-link"><i class="fa-solid fa-clipboard-list me-3"></i>Tareas</a></li>
             <li><a href="/clase/<%= clase.id %>/entregadas" class="sidebar-link"><i class="fa-solid fa-clipboard-check me-3"></i>Entregadas</a></li>
+            <li><a href="/mis-reportes" class="sidebar-link"><i class="fa-solid fa-headset me-3"></i>Mis reportes</a></li>
         </ul>
         <div class="sidebar-footer">
-            <button class="video-action" type="button" aria-label="Ver video">
-                <i class="fa-solid fa-play"></i>
-                <span>Click para ver el tutorial</span>
-            </button>
             <div class="mt-3">
+                <a href="/mis-reportes" class="btn btn-outline-secondary btn-sm w-100 mb-2">Ver mis reportes</a>
                 <a href="/logout" class="btn btn-outline-danger btn-sm w-100">
                     <i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar sesión
                 </a>
@@ -163,7 +161,7 @@
                                             <span class="badge bg-primary bg-opacity-10 text-primary py-2 px-3"><%= tareaPosts.length %> pendientes</span>
                                         <% } %>
                                         <% if (isProfesor) { %>
-                                            <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="createUnit('<%= clase.id %>')">
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#createUnitModal">
                                                 <i class="fa-solid fa-folder-plus me-1"></i> Crear unidad
                                             </button>
                                         <% } %>
@@ -194,10 +192,10 @@
                                                             <p class="mb-0 text-muted"><%= post.descripcion || 'Revisa los detalles de la tarea aquí.' %></p>
                                                         </div>
                                                         <div class="d-flex align-items-center gap-2">
-                                                            <span class="btn btn-sm btn-primary rounded-pill">Ir</span>
                                                             <% if (isProfesor || (user && post.creador_id === user.id)) { %>
                                                                 <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" onclick="event.stopPropagation(); deleteAssignment('<%= post.id %>')">Eliminar</button>
                                                             <% } %>
+                                                            <span class="btn btn-sm btn-primary rounded-pill">Ir</span>
                                                         </div>
                                                     </div>
                                                 <% }) %>
@@ -219,10 +217,10 @@
                                                             <p class="mb-0 text-muted"><%= post.descripcion || 'Revisa los detalles de la tarea aquí.' %></p>
                                                         </div>
                                                         <div class="d-flex align-items-center gap-2">
-                                                            <span class="btn btn-sm btn-primary rounded-pill">Ir</span>
                                                             <% if (isProfesor || (user && post.creador_id === user.id)) { %>
                                                                 <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" onclick="event.stopPropagation(); deleteAssignment('<%= post.id %>')">Eliminar</button>
                                                             <% } %>
+                                                            <span class="btn btn-sm btn-primary rounded-pill">Ir</span>
                                                         </div>
                                                     </div>
                                                 <% }) %>
@@ -402,81 +400,8 @@
                                 <% } %>
                             </div>
 
-                            <% if (isProfesor && classPerformance) { %>
-                                <div class="row g-3 mb-4">
-                                    <div class="col-md-3">
-                                        <div class="card border-0 shadow-sm h-100">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center justify-content-between">
-                                                    <div>
-                                                        <p class="text-muted small mb-1">Promedio</p>
-                                                        <h3 class="mb-0 fw-bold"><%= classPerformance.promedioCalificacion %></h3>
-                                                    </div>
-                                                    <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                        <i class="fa-solid fa-star fa-lg"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="card border-0 shadow-sm h-100">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center justify-content-between">
-                                                    <div>
-                                                        <p class="text-muted small mb-1">Entregas</p>
-                                                        <h3 class="mb-0 fw-bold"><%= classPerformance.totalEntregas %></h3>
-                                                    </div>
-                                                    <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                        <i class="fa-solid fa-check fa-lg"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="card border-0 shadow-sm h-100">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center justify-content-between">
-                                                    <div>
-                                                        <p class="text-muted small mb-1">No entregadas</p>
-                                                        <h3 class="mb-0 fw-bold"><%= classPerformance.noEntregadas %></h3>
-                                                    </div>
-                                                    <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                        <i class="fa-solid fa-ban fa-lg"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="card border-0 shadow-sm h-100">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center justify-content-between">
-                                                    <div>
-                                                        <p class="text-muted small mb-1">% Entrega</p>
-                                                        <h3 class="mb-0 fw-bold"><%= classPerformance.porcentajeEntrega %>%</h3>
-                                                    </div>
-                                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                        <i class="fa-solid fa-percent fa-lg"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label for="studentSelector" class="form-label fw-bold">Seleccionar alumno</label>
-                                    <select id="studentSelector" class="form-select" onchange="actualizarRendimientoIndividual()">
-                                        <option value="">-- Selecciona un alumno --</option>
-                                        <% (studentsList || []).forEach(student => { %>
-                                            <option value="<%= student.id %>"><%= student.nombre %> <%= student.apellido %></option>
-                                        <% }) %>
-                                    </select>
-                                </div>
-
-                                <div id="studentPerformanceSection" class="d-none">
+                            <% if (isProfesor) { %>
+                                <% if (classPerformance) { %>
                                     <div class="row g-3 mb-4">
                                         <div class="col-md-3">
                                             <div class="card border-0 shadow-sm h-100">
@@ -484,7 +409,7 @@
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <div>
                                                             <p class="text-muted small mb-1">Promedio</p>
-                                                            <h3 class="mb-0 fw-bold" id="studentAverage">0.00</h3>
+                                                            <h3 class="mb-0 fw-bold"><%= classPerformance.promedioCalificacion %></h3>
                                                         </div>
                                                         <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                                                             <i class="fa-solid fa-star fa-lg"></i>
@@ -498,8 +423,8 @@
                                                 <div class="card-body">
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <div>
-                                                            <p class="text-muted small mb-1">Entregadas</p>
-                                                            <h3 class="mb-0 fw-bold" id="studentDelivered">0</h3>
+                                                            <p class="text-muted small mb-1">Entregas</p>
+                                                            <h3 class="mb-0 fw-bold"><%= classPerformance.totalEntregas %></h3>
                                                         </div>
                                                         <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                                                             <i class="fa-solid fa-check fa-lg"></i>
@@ -513,11 +438,11 @@
                                                 <div class="card-body">
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <div>
-                                                            <p class="text-muted small mb-1">% Entrega</p>
-                                                            <h3 class="mb-0 fw-bold" id="studentDeliveryPercent">0%</h3>
+                                                            <p class="text-muted small mb-1">No entregadas</p>
+                                                            <h3 class="mb-0 fw-bold"><%= classPerformance.noEntregadas %></h3>
                                                         </div>
-                                                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                            <i class="fa-solid fa-percent fa-lg"></i>
+                                                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                            <i class="fa-solid fa-ban fa-lg"></i>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -528,61 +453,141 @@
                                                 <div class="card-body">
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <div>
-                                                            <p class="text-muted small mb-1">Calificadas</p>
-                                                            <h3 class="mb-0 fw-bold" id="studentGraded">0</h3>
+                                                            <p class="text-muted small mb-1">% Entrega</p>
+                                                            <h3 class="mb-0 fw-bold"><%= classPerformance.porcentajeEntrega %>%</h3>
                                                         </div>
-                                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                            <i class="fa-solid fa-clipboard-check fa-lg"></i>
+                                                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                            <i class="fa-solid fa-percent fa-lg"></i>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="card border-0 shadow-sm">
-                                                <div class="card-body">
-                                                    <p class="small text-muted mb-2">A tiempo</p>
-                                                    <h4 class="fw-bold" id="studentOnTime">0</h4>
-                                                    <div class="progress" style="height: 8px;">
-                                                        <div class="progress-bar bg-success" id="studentOnTimeBar" style="width: 0%"></div>
+
+                                    <div class="mb-4">
+                                        <label for="studentSelector" class="form-label fw-bold">Seleccionar alumno</label>
+                                        <select id="studentSelector" class="form-select" onchange="actualizarRendimientoIndividual()">
+                                            <option value="">-- Selecciona un alumno --</option>
+                                            <% (studentsList || []).forEach(student => { %>
+                                                <option value="<%= student.id %>"><%= student.nombre %> <%= student.apellido %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+
+                                    <div id="studentPerformanceSection" class="d-none">
+                                        <div class="row g-3 mb-4">
+                                            <div class="col-md-3">
+                                                <div class="card border-0 shadow-sm h-100">
+                                                    <div class="card-body">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div>
+                                                                <p class="text-muted small mb-1">Promedio</p>
+                                                                <h3 class="mb-0 fw-bold" id="studentAverage">0.00</h3>
+                                                            </div>
+                                                            <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                                <i class="fa-solid fa-star fa-lg"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="card border-0 shadow-sm h-100">
+                                                    <div class="card-body">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div>
+                                                                <p class="text-muted small mb-1">Entregadas</p>
+                                                                <h3 class="mb-0 fw-bold" id="studentDelivered">0</h3>
+                                                            </div>
+                                                            <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                                <i class="fa-solid fa-check fa-lg"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="card border-0 shadow-sm h-100">
+                                                    <div class="card-body">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div>
+                                                                <p class="text-muted small mb-1">% Entrega</p>
+                                                                <h3 class="mb-0 fw-bold" id="studentDeliveryPercent">0%</h3>
+                                                            </div>
+                                                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                                <i class="fa-solid fa-percent fa-lg"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="card border-0 shadow-sm h-100">
+                                                    <div class="card-body">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div>
+                                                                <p class="text-muted small mb-1">Calificadas</p>
+                                                                <h3 class="mb-0 fw-bold" id="studentGraded">0</h3>
+                                                            </div>
+                                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                                <i class="fa-solid fa-clipboard-check fa-lg"></i>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="card border-0 shadow-sm">
-                                                <div class="card-body">
-                                                    <p class="small text-muted mb-2">Tarde</p>
-                                                    <h4 class="fw-bold" id="studentLate">0</h4>
-                                                    <div class="progress" style="height: 8px;">
-                                                        <div class="progress-bar bg-warning" id="studentLateBar" style="width: 0%"></div>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="card border-0 shadow-sm">
+                                                    <div class="card-body">
+                                                        <p class="small text-muted mb-2">A tiempo</p>
+                                                        <h4 class="fw-bold" id="studentOnTime">0</h4>
+                                                        <div class="progress" style="height: 8px;">
+                                                            <div class="progress-bar bg-success" id="studentOnTimeBar" style="width: 0%"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="card border-0 shadow-sm">
-                                                <div class="card-body">
-                                                    <p class="small text-muted mb-2">No entregadas</p>
-                                                    <h4 class="fw-bold" id="studentNotDelivered">0</h4>
-                                                    <div class="progress" style="height: 8px;">
-                                                        <div class="progress-bar bg-danger" id="studentNotDeliveredBar" style="width: 0%"></div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 shadow-sm">
+                                                    <div class="card-body">
+                                                        <p class="small text-muted mb-2">Tarde</p>
+                                                        <h4 class="fw-bold" id="studentLate">0</h4>
+                                                        <div class="progress" style="height: 8px;">
+                                                            <div class="progress-bar bg-warning" id="studentLateBar" style="width: 0%"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="card border-0 shadow-sm">
-                                                <div class="card-body">
-                                                    <p class="small text-muted mb-2">Calificadas</p>
-                                                    <h4 class="fw-bold" id="studentTotalGraded">0</h4>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 shadow-sm">
+                                                    <div class="card-body">
+                                                        <p class="small text-muted mb-2">No entregadas</p>
+                                                        <h4 class="fw-bold" id="studentNotDelivered">0</h4>
+                                                        <div class="progress" style="height: 8px;">
+                                                            <div class="progress-bar bg-danger" id="studentNotDeliveredBar" style="width: 0%"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 shadow-sm">
+                                                    <div class="card-body">
+                                                        <p class="small text-muted mb-2">Calificadas</p>
+                                                        <h4 class="fw-bold" id="studentTotalGraded">0</h4>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                <% } else { %>
+                                    <div class="text-center py-5">
+                                        <i class="fa-solid fa-inbox fa-3x text-muted opacity-25 mb-3"></i>
+                                        <p class="text-muted mb-0">No hay estudiantes o tareas suficientes para mostrar rendimiento.</p>
+                                    </div>
+                                <% } %>
                             <% } else { %>
                                 <div class="alert alert-info" role="alert">
                                     <i class="fa-solid fa-circle-info"></i> El rendimiento de clase solo está disponible para profesores.

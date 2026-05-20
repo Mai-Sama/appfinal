@@ -1,4 +1,5 @@
 const SupportModel = require('../model/supportModel');
+const supabase = require('../config/db');
 
 const allowedProblemTypes = [
     'Problemas de cuenta y acceso',
@@ -14,7 +15,8 @@ exports.createReport = async (req, res) => {
             return res.status(401).json({ error: 'Sesión expirada o no iniciada' });
         }
 
-        const { tipo_problema, descripcion, url_evidencia } = req.body;
+        const { tipo_problema, descripcion } = req.body;
+        let url_evidencia = null;
 
         if (!tipo_problema || !allowedProblemTypes.includes(tipo_problema)) {
             return res.status(400).json({ error: 'Tipo de problema inválido' });
@@ -25,15 +27,30 @@ exports.createReport = async (req, res) => {
         if (descripcion.length > 1000) {
             return res.status(400).json({ error: 'La descripción no puede exceder 1000 caracteres' });
         }
-        if (url_evidencia && url_evidencia.length > 255) {
-            return res.status(400).json({ error: 'La URL de evidencia es demasiado larga' });
+
+        if (req.file) {
+            try {
+                const fileName = `soporte_${usuario.id}_${Date.now()}_${req.file.originalname.replace(/[^a-zA-Z0-9_.-]/g, '_')}`;
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('evidencias_soporte')
+                    .upload(fileName, req.file.buffer, { contentType: req.file.mimetype, upsert: false });
+
+                if (uploadError) {
+                    console.warn('No se pudo subir evidencia de soporte:', uploadError.message);
+                } else {
+                    const { data: publicUrlData } = supabase.storage.from('evidencias_soporte').getPublicUrl(fileName);
+                    url_evidencia = publicUrlData?.publicUrl || publicUrlData?.publicURL || `${process.env.SUPABASE_URL}/storage/v1/object/public/evidencias_soporte/${fileName}`;
+                }
+            } catch (uploadErr) {
+                console.warn('Error al subir evidencia de soporte:', uploadErr.message);
+            }
         }
 
         const { data, error } = await SupportModel.create({
             usuario_id: usuario.id,
             tipo_problema,
             descripcion,
-            url_evidencia: url_evidencia || null
+            url_evidencia
         });
 
         if (error) {
@@ -45,5 +62,20 @@ exports.createReport = async (req, res) => {
     } catch (err) {
         console.error('Error en supportController.createReport:', err);
         res.status(500).json({ error: 'No se pudo crear el reporte de soporte' });
+    }
+};
+
+exports.listUserReports = async (req, res) => {
+    try {
+        const usuario = req.user || req.session?.user;
+        if (!usuario) return res.status(401).json({ error: 'No autorizado' });
+
+        const { data, error } = await SupportModel.getByUser(usuario.id);
+        if (error) throw error;
+
+        res.json(data || []);
+    } catch (err) {
+        console.error('Error listando reportes:', err);
+        res.status(500).json({ error: 'No se pudieron obtener los reportes' });
     }
 };

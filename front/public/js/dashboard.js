@@ -51,11 +51,20 @@ document.addEventListener('DOMContentLoaded', function() {
             
             sidebarLinks.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
-            
-            document.querySelectorAll('.content-section').forEach(sec => {
-                sec.classList.remove('active');
-            });
-            document.getElementById(section + '-section').classList.add('active');
+            const dashboardId = section + '-section';
+            const dashboardEl = document.getElementById(dashboardId);
+            if (dashboardEl) {
+                document.querySelectorAll('.content-section').forEach(sec => {
+                    sec.classList.remove('active');
+                });
+                dashboardEl.classList.add('active');
+            } else if (typeof window.switchSection === 'function') {
+                try {
+                    window.switchSection(section);
+                } catch (err) {
+                    console.error('Error calling switchSection:', err);
+                }
+            }
             
             if (window.innerWidth < 992) {
                 sidebar.classList.remove('show');
