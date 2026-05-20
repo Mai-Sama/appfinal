@@ -1,7 +1,7 @@
 const UserModel = require('../model/userModel');
 const supabase = require('../config/db');
 const jwt = require('jsonwebtoken');
-const BCrypt = require('jbcrypt');
+const bcrypt = require('bcryptjs');
 
 const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,7 +46,7 @@ exports.register = async (req, res) => {
             return res.status(400).json({ error: "El email ya está registrado" });
         }
         
-        const hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        const hashedPassword = await bcrypt.hash(password, 12);
         const { data, error } = await UserModel.create({ nombre, apellido, email, password: hashedPassword });
         
         if (error) return res.status(400).json({ error: error.message });
@@ -74,7 +74,8 @@ exports.login = async (req, res) => {
 
         const { data: usuario, error } = await UserModel.findByEmail(email);
 
-        if (error || !usuario || !BCrypt.checkpw(password, usuario.password)) {
+        const passwordMatch = usuario && usuario.password ? await bcrypt.compare(password, usuario.password) : false;
+        if (error || !usuario || !passwordMatch) {
             return res.status(401).json({ error: "Credenciales incorrectas" });
         }
 
