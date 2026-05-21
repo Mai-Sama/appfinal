@@ -141,7 +141,7 @@
                                     <p class="mb-0 mt-1"><%= entrega.comentario_alumno %></p>
                                 </div>
                             <% } %>                        <% } else { %>
-                            <form id="submissionForm">
+                            <form id="submissionForm" onsubmit="return false;" autocomplete="off">
                                 <div class="mb-3">
                                     <label class="btn btn-outline-primary w-100 py-3 border-dashed">
                                         <i class="fa-solid fa-plus me-2"></i> Añadir

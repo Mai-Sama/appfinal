@@ -50,7 +50,8 @@ async function submitTaskWithoutFile(tareaId, comentario, estudianteId, archivo 
             refreshSubmissionView();
         } else {
             const err = await response.json().catch(() => null);
-            showError('Error al entregar', err?.error || 'No se pudo entregar la tarea');
+            const message = err?.error || `No se pudo entregar la tarea (status ${response.status})`;
+            showError('Error al entregar', message);
         }
     } catch (error) {
         showError('Error de conexión', 'No se pudo conectar con el servidor');

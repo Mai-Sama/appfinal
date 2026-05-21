@@ -17,6 +17,10 @@ router.post('/', upload.single('archivo_guia'), assignmentController.createAssig
 
 router.post('/submit', upload.single('archivo_entrega'), assignmentController.submitSubmission);
 
+router.get('/submit', (req, res) => {
+    res.status(405).json({ error: 'Método GET no permitido. Usa POST /api/assignments/submit.' });
+});
+
 router.put('/grade/:id', assignmentController.gradeSubmission);
 
 router.put('/:id', assignmentController.updateAssignment);
