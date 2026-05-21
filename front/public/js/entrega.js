@@ -1,6 +1,14 @@
-document.getElementById('submissionFile')?.addEventListener('change', function(e) {
-    const fileName = e.target.files[0]?.name || "";
-    document.getElementById('fileNameDisplay').textContent = fileName;
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.id === 'submissionFile') {
+        const fileName = e.target.files[0]?.name || "";
+        document.getElementById('fileNameDisplay').textContent = fileName;
+    }
+});
+
+document.addEventListener('submit', function(e) {
+    if (e.target && e.target.id === 'submissionForm') {
+        e.preventDefault();
+    }
 });
 
 async function submitTask(tareaId) {
@@ -8,6 +16,8 @@ async function submitTask(tareaId) {
     const comentario = document.getElementById('comentarioAlumno')?.value.trim() || '';
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const estudianteId = user.id;
+
+    console.log('submitTask invoked', { tareaId, fileName: fileInput?.files[0]?.name, comentario, estudianteId });
 
     if (!fileInput.files[0]) {
         showConfirm(
@@ -39,6 +49,7 @@ async function submitTaskWithoutFile(tareaId, comentario, estudianteId, archivo 
     }
 
     try {
+        console.log('sending POST to /api/assignments/submit', { tareaId, estudianteId, hasFile: !!archivo });
         const response = await fetch('/api/assignments/submit', {
             method: 'POST',
             body: formData,

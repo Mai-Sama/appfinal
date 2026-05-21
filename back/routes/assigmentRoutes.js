@@ -9,9 +9,9 @@ router.get('/submissions/my-history', assignmentController.getStudentSubmissions
 
 router.get('/class/:claseId', assignmentController.getAssignmentsByClass);
 
-router.delete('/:id', assignmentController.deleteAssignment);
-
 router.delete('/submission/:id', assignmentController.cancelSubmission);
+
+router.delete('/:id', assignmentController.deleteAssignment);
 
 router.post('/', upload.single('archivo_guia'), assignmentController.createAssignment);
 
