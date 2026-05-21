@@ -398,7 +398,6 @@ async function transcribeAnnouncementFile() {
             return;
         }
         if (json.transcript) {
-            // append transcript to content
             contentEl.value = (contentEl.value ? contentEl.value + "\n\n" : "") + json.transcript;
             alert('Transcripción añadida al contenido');
         }

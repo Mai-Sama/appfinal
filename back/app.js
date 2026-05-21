@@ -289,6 +289,17 @@ app.get('/clase/:id', authenticateToken, async (req, res) => {
     }
 });
 
+app.use((err, req, res, next) => {
+    console.error('Unhandled error middleware:', err && err.message ? err.message : err);
+    if (err && err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ error: 'El archivo es demasiado grande. Límite: 20MB' });
+    }
+    if (err && err.name === 'MulterError') {
+        return res.status(400).json({ error: err.message || 'Error al procesar el archivo' });
+    }
+    res.status(err?.status || 500).json({ error: err?.message || 'Error interno del servidor' });
+});
+
 app.get('/clase/:id/rendimiento', authenticateToken, async (req, res) => {
     try {
         const claseId = req.params.id;

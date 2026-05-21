@@ -266,7 +266,15 @@ function startVoiceDictation(fieldId, button) {
     };
 
     recognition.onerror = (event) => {
-        showError('Error de dictado', event.error || 'No se pudo usar el micrófono');
+        const errCode = event?.error || '';
+        let friendly = 'No se pudo usar el micrófono.';
+        if (errCode === 'network') friendly = 'Error de red durante el dictado. Revisa tu conexión.';
+        else if (errCode === 'no-speech') friendly = 'No se detectó voz. Intenta de nuevo.';
+        else if (errCode === 'not-allowed' || errCode === 'service-not-allowed') friendly = 'Permiso denegado para usar el micrófono. Revisa los permisos del navegador.';
+        else if (errCode === 'aborted') friendly = 'Dictado abortado.';
+        else if (errCode === 'audio-capture') friendly = 'No se pudo acceder al micrófono.';
+
+        showError('Error de dictado', friendly + (errCode ? ` (${errCode})` : ''));
     };
 
     recognition.onend = () => {

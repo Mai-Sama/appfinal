@@ -4,8 +4,8 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = process.env.SUPABASE_URL || "https://lndmtvqporbhnxojcbhr.supabase.co";
-const supabaseKey = process.env.SUPABASE_KEY || "sb_publishable_hE93GPxU7DA5UBBtOLPjPA_FJa-FizH";
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY ;
 
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
   console.warn("Aviso: usando valores por defecto para Supabase. Añade SUPABASE_URL y SUPABASE_KEY en back/.env para mayor seguridad.");

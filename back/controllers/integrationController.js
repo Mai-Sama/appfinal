@@ -49,7 +49,6 @@ exports.transcribeFromUrl = async (req, res) => {
 exports.transcribeUpload = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'No se recibió archivo' });
-        // upload to supabase temporary bucket 'transcribe_tmp' or use public bucket 'anuncios' if present
         const fileName = `transcribe_${Date.now()}_${req.file.originalname.replace(/[^a-zA-Z0-9_.-]/g, '_')}`;
         const bucket = req.body?.bucket || process.env.GROQ_UPLOAD_BUCKET || 'anuncios';
 
@@ -72,7 +71,6 @@ exports.transcribeUpload = async (req, res) => {
     }
 };
 
-// Sapling.ai integration (simple wrapper).
 exports.saplingAnalyze = async (req, res) => {
     try {
         const { text } = req.body || {};
@@ -83,9 +81,7 @@ exports.saplingAnalyze = async (req, res) => {
         const saplingKey = process.env.SAPLING_API_KEY;
 
         if (!saplingKey || !saplingUrl) {
-            // fallback: simple heuristic: estimate completion percent by presence of keywords and length
             const lenScore = Math.min(1, text.length / 5000);
-            // keyword heuristic
             const keywords = ['hecho', 'completo', 'terminado', 'finalizado', 'listo'];
             let kscore = 0;
             const lower = text.toLowerCase();
@@ -94,7 +90,6 @@ exports.saplingAnalyze = async (req, res) => {
             return res.json({ percent });
         }
 
-        // call sapling if configured
         try {
             const r = await fetch(saplingUrl, {
                 method: 'POST',
@@ -112,7 +107,6 @@ exports.saplingAnalyze = async (req, res) => {
             }
 
             const j = await r.json();
-            // Expecting sapling to return { percent } or similar — try common fields
             const percent = j.percent || j.completion_percent || j.score || null;
             if (percent === null) return res.json({ percent: Math.round(Math.min(100, (text.length/5000)*100)) });
             return res.json({ percent });

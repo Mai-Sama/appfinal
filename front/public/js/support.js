@@ -88,7 +88,6 @@ async function transcribeSupportFile() {
         if (json.transcript) {
             desc.value = (desc.value ? desc.value + "\n\n" : "") + json.transcript;
             const modal = bootstrap.Modal.getInstance(document.getElementById('supportModal'));
-            // don't close modal; notify
             await showSuccess('Transcripción añadida', 'La transcripción se agregó a la descripción');
         }
     } catch (err) {
