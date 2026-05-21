@@ -251,6 +251,7 @@ exports.submitSubmission = async (req, res) => {
             tarea_id,
             estudiante_id,
             archivo_entrega_url: fileUrl,
+            nombre_archivo: file ? file.originalname : null,
             comentario_alumno: comentario_alumno || ''
         });
 

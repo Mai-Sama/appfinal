@@ -54,8 +54,9 @@ exports.transcribeUpload = async (req, res) => {
 
         const { data: uploadData, error: uploadError } = await supabase.storage.from(bucket).upload(fileName, req.file.buffer, { contentType: req.file.mimetype, upsert: false });
         if (uploadError) {
-            console.warn('Supabase upload error (transcribe):', uploadError.message);
-            return res.status(502).json({ error: 'No se pudo subir archivo para transcribir' });
+            console.warn('Supabase upload error (transcribe):', uploadError);
+            // Include upload error message to help debug from client
+            return res.status(502).json({ error: `No se pudo subir archivo para transcribir: ${uploadError.message || uploadError}` });
         }
 
         const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(fileName);

@@ -112,6 +112,16 @@
                             <div class="alert alert-success small">Tarea entregada</div>
                             <% if (entrega.archivo_entrega_url) { %>
                                 <a href="<%= entrega.archivo_entrega_url %>" target="_blank" class="btn btn-outline-secondary w-100 mb-2">Ver mi entrega</a>
+                                <% 
+                                    let filenameFromUrl = 'archivo';
+                                    try {
+                                        if (entrega && entrega.archivo_entrega_url) {
+                                            const parts = entrega.archivo_entrega_url.split('/');
+                                            filenameFromUrl = decodeURIComponent(parts[parts.length - 1] || 'archivo');
+                                        }
+                                    } catch(e) { filenameFromUrl = 'archivo'; }
+                                %>
+                                <div class="small text-muted mt-2 text-center">Archivo: <a href="<%= entrega.archivo_entrega_url %>" target="_blank"><%= entrega.nombre_archivo || filenameFromUrl %></a></div>
                             <% } %>
                             <button type="button" class="btn btn-outline-danger w-100" onclick="cancelSubmission('<%= entrega.id %>')">Anular entrega</button>
                             <% if (entrega.calificacion !== null && entrega.calificacion !== undefined) { %>

@@ -15,6 +15,7 @@ function verDetalleEntrega(alumnoStr) {
         const url = alumno.entrega.archivo_entrega_url;
         const isPdf = url.toLowerCase().includes('.pdf') || url.includes('application/pdf');
         const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+        const isAudio = /\.(mp3|m4a|wav|ogg|webm|aac)$/i.test(url);
         
         if (isPdf) {
             archivoHtml = `
@@ -26,6 +27,16 @@ function verDetalleEntrega(alumnoStr) {
             archivoHtml = `
                 <div class="border rounded mb-3 bg-white p-3 text-center">
                     <img src="${url}" alt="Archivo entregado" style="max-width: 100%; max-height: 500px; border-radius: 4px;">
+                </div>
+            `;
+        } else if (isAudio) {
+            archivoHtml = `
+                <div class="border rounded mb-3 bg-white p-3 text-center">
+                    <audio controls style="width:100%;">
+                        <source src="${url}">
+                        Tu navegador no soporta la reproducción de audio.
+                    </audio>
+                    <div class="mt-2"><a href="${url}" target="_blank">${alumno.entrega.nombre_archivo || 'Descargar audio'}</a></div>
                 </div>
             `;
         } else {
@@ -64,6 +75,8 @@ function verDetalleEntrega(alumnoStr) {
                     Transcribir audio
                     <input type="file" id="profesorCommentAudio" hidden accept="audio/*" onchange="transcribeAudioFileToField('comentarioProfesor', 'profesorCommentAudio', 'anuncios')">
                 </label>
+                <button class="btn btn-outline-info btn-sm" type="button" id="saplingAnalyzeBtn" onclick="analyzeCommentWithSapling('comentarioProfesor', this)">Detectar % hecha (IA)</button>
+                <span id="saplingResult" class="small text-muted ms-2"></span>
             </div>
 
             <h6 class="fw-bold mb-3">Archivo entregado:</h6>
@@ -77,6 +90,42 @@ function verDetalleEntrega(alumnoStr) {
             ` : ''}
         </div>
     `;
+}
+
+async function analyzeCommentWithSapling(fieldId, btn) {
+    const textarea = document.getElementById(fieldId);
+    if (!textarea) return;
+    const text = textarea.value || '';
+    if (!text || text.trim().length === 0) {
+        return showError('Texto requerido', 'Escribe o selecciona texto para analizar');
+    }
+    const resultSpan = document.getElementById('saplingResult');
+    btn.disabled = true;
+    resultSpan.textContent = 'Analizando...';
+
+    try {
+        const res = await fetch('/api/integrations/sapling', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ text })
+        });
+        const j = await res.json();
+        if (!res.ok) {
+            throw new Error(j.error || 'Error en análisis');
+        }
+        const percent = j.percent || j.percent_complete || j.percent_complete || j.percentaje || j.percent;
+        if (percent === undefined || percent === null) {
+            resultSpan.textContent = `IA: ${j.percent || 'N/A'}%`;
+        } else {
+            resultSpan.textContent = `IA: ${percent}% hecho`;
+        }
+    } catch (err) {
+        resultSpan.textContent = '';
+        showError('Error IA', err.message || 'No se pudo analizar');
+    } finally {
+        btn.disabled = false;
+    }
 }
 
 async function guardarNota(entregaId, puntoMaximo) {
