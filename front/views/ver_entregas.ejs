@@ -24,7 +24,7 @@
                     <div class="list-group list-group-flush">
                         <% alumnos.forEach(alumno => { %>
                             <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
-                                    onclick="verDetalleEntrega('<%= JSON.stringify(alumno) %>')">
+                                    onclick='verDetalleEntrega(<%- JSON.stringify(alumno) %>)'>
                                 <div>
                                     <p class="mb-0 small fw-bold"><%= alumno.nombre %> <%= alumno.apellido %></p>
                                     <span class="badge <%= alumno.entrega ? 'bg-success' : 'bg-secondary' %>" style="font-size: 0.7rem;">

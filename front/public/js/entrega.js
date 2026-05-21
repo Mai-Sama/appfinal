@@ -47,13 +47,21 @@ async function submitTaskWithoutFile(tareaId, comentario, estudianteId, archivo 
 
         if (response.ok) {
             await showSuccess('¡Tarea entregada!', 'Tu tarea ha sido entregada correctamente');
-            location.reload();
+            refreshSubmissionView();
         } else {
             const err = await response.json().catch(() => null);
             showError('Error al entregar', err?.error || 'No se pudo entregar la tarea');
         }
     } catch (error) {
         showError('Error de conexión', 'No se pudo conectar con el servidor');
+    }
+}
+
+function refreshSubmissionView() {
+    if (typeof openTaskDetail === 'function' && window.currentTaskId) {
+        openTaskDetail(window.currentTaskId);
+    } else {
+        location.reload();
     }
 }
 
@@ -76,7 +84,7 @@ async function cancelSubmission(entregaId) {
 
             if (response.ok) {
                 await showSuccess('Entrega anulada', 'La entrega ha sido anulada correctamente');
-                history.back();
+                refreshSubmissionView();
             } else {
                 showError('Error al anular', 'No se pudo anular la entrega');
             }

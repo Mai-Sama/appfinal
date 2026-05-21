@@ -55,12 +55,26 @@ exports.transcribeUpload = async (req, res) => {
         const { data: uploadData, error: uploadError } = await supabase.storage.from(bucket).upload(fileName, req.file.buffer, { contentType: req.file.mimetype, upsert: false });
         if (uploadError) {
             console.warn('Supabase upload error (transcribe):', uploadError);
-            // Include upload error message to help debug from client
-            return res.status(502).json({ error: `No se pudo subir archivo para transcribir: ${uploadError.message || uploadError}` });
+
+            // If file already exists, retry with upsert to avoid collisions
+            if (uploadError?.status === 409 || uploadError?.message?.includes('already exists')) {
+                const { error: retryError } = await supabase.storage.from(bucket).upload(fileName, req.file.buffer, { contentType: req.file.mimetype, upsert: true });
+                if (retryError) {
+                    console.warn('Supabase retry upload error (transcribe):', retryError);
+                    return res.status(502).json({ error: `No se pudo subir archivo para transcribir: ${retryError.message || retryError}` });
+                }
+            } else {
+                return res.status(502).json({ error: `No se pudo subir archivo para transcribir: ${uploadError.message || uploadError}` });
+            }
         }
 
         const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(fileName);
-        const publicUrl = publicUrlData?.publicUrl || `${process.env.SUPABASE_URL}/storage/v1/object/public/${bucket}/${fileName}`;
+        const publicUrl = publicUrlData?.publicUrl || `${(process.env.SUPABASE_URL || '').replace(/\/$/, '')}/storage/v1/object/public/${bucket}/${fileName}`;
+
+        if (!publicUrl) {
+            console.warn('No se pudo obtener URL pública para transcribir');
+            return res.status(502).json({ error: 'No se pudo generar la URL pública para transcribir el audio' });
+        }
 
         const transcript = await callGroqTranscriptionByUrl(publicUrl);
         if (!transcript) return res.status(502).json({ error: 'No se pudo transcribir audio' });

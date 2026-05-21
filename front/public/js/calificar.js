@@ -1,5 +1,7 @@
-function verDetalleEntrega(alumnoStr) {
-    const alumno = JSON.parse(alumnoStr);
+function verDetalleEntrega(alumno) {
+    if (typeof alumno === 'string') {
+        alumno = JSON.parse(alumno);
+    }
     const container = document.getElementById('detalleEntrega');
 
     if (!alumno.entrega) {
@@ -36,14 +38,14 @@ function verDetalleEntrega(alumnoStr) {
                         <source src="${url}">
                         Tu navegador no soporta la reproducción de audio.
                     </audio>
-                    <div class="mt-2"><a href="${url}" target="_blank">${alumno.entrega.nombre_archivo || 'Descargar audio'}</a></div>
+                    <div class="mt-2"><a href="${url}" target="_blank" class="submission-file-link">${alumno.entrega.nombre_archivo || 'Descargar audio'}</a></div>
                 </div>
             `;
         } else {
             archivoHtml = `
                 <div class="border rounded p-3 bg-light mb-3">
                     <i class="fa-solid fa-file me-2"></i>
-                    <a href="${url}" target="_blank" class="text-decoration-none">${alumno.entrega.nombre_archivo || 'Descargar archivo'}</a>
+                    <a href="${url}" target="_blank" class="text-decoration-none submission-file-link">${alumno.entrega.nombre_archivo || 'Descargar archivo'}</a>
                 </div>
             `;
         }
@@ -85,7 +87,7 @@ function verDetalleEntrega(alumnoStr) {
             ${alumno.entrega.comentario_alumno ? `
                 <h6 class="fw-bold mt-4 mb-3">Comentario del alumno:</h6>
                 <div class="border-start border-info rounded p-3 bg-light">
-                    <p class="mb-0">${alumno.entrega.comentario_alumno}</p>
+                    <p id="studentSubmissionComment" class="mb-0">${alumno.entrega.comentario_alumno}</p>
                 </div>
             ` : ''}
         </div>
@@ -95,9 +97,31 @@ function verDetalleEntrega(alumnoStr) {
 async function analyzeCommentWithSapling(fieldId, btn) {
     const textarea = document.getElementById(fieldId);
     if (!textarea) return;
-    const text = textarea.value || '';
+    let text = textarea.value || '';
     if (!text || text.trim().length === 0) {
-        return showError('Texto requerido', 'Escribe o selecciona texto para analizar');
+        const studentCommentEl = document.getElementById('studentSubmissionComment');
+        if (studentCommentEl && studentCommentEl.textContent.trim()) {
+            text = studentCommentEl.textContent.trim();
+        }
+    }
+
+    const fileLink = document.querySelector('.submission-file-link');
+    if ((!text || !text.trim()) && fileLink && fileLink.href) {
+        const fileUrl = fileLink.href;
+        if (/\.(txt|md|csv|json|js|html|htm|xml)$/i.test(fileUrl)) {
+            try {
+                const fileResponse = await fetch(fileUrl, { credentials: 'include' });
+                if (fileResponse.ok) {
+                    text = await fileResponse.text();
+                }
+            } catch (err) {
+                console.warn('No se pudo leer el archivo del alumno para IA:', err);
+            }
+        }
+    }
+
+    if (!text || text.trim().length === 0) {
+        return showError('Texto requerido', 'No hay texto para analizar. Añade un comentario o sube un archivo de texto.');
     }
     const resultSpan = document.getElementById('saplingResult');
     btn.disabled = true;
