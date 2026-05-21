@@ -6,7 +6,8 @@ document.getElementById('submissionFile')?.addEventListener('change', function(e
 async function submitTask(tareaId) {
     const fileInput = document.getElementById('submissionFile');
     const comentario = document.getElementById('comentarioAlumno')?.value.trim() || '';
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const estudianteId = user.id;
 
     if (!fileInput.files[0]) {
         showConfirm(
@@ -16,7 +17,7 @@ async function submitTask(tareaId) {
             'Cancelar'
         ).then(result => {
             if (!result.isConfirmed) return;
-            submitTaskWithoutFile(tareaId, comentario, user.id);
+            submitTaskWithoutFile(tareaId, comentario, estudianteId);
         });
         return;
     }

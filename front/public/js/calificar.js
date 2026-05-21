@@ -58,6 +58,13 @@ function verDetalleEntrega(alumnoStr) {
             
             <h6 class="fw-bold mb-3">Comentario privado del profesor:</h6>
             <textarea id="comentarioProfesor" class="form-control mb-4" rows="3" placeholder="Escribe tu comentario privado para el alumno...">${alumno.entrega.comentario_profesor || ''}</textarea>
+            <div class="d-flex gap-2 mb-4">
+                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="startVoiceDictation('comentarioProfesor', this)">Dictar comentario</button>
+                <label class="btn btn-outline-secondary btn-sm mb-0">
+                    Transcribir audio
+                    <input type="file" id="profesorCommentAudio" hidden accept="audio/*" onchange="transcribeAudioFileToField('comentarioProfesor', 'profesorCommentAudio', 'anuncios')">
+                </label>
+            </div>
 
             <h6 class="fw-bold mb-3">Archivo entregado:</h6>
             ${archivoHtml}

@@ -134,14 +134,21 @@
                             <form id="submissionForm">
                                 <div class="mb-3">
                                     <label class="btn btn-outline-primary w-100 py-3 border-dashed">
-                                        <i class="fa-solid fa-plus me-2"></i> Añadir o crear
-                                        <input type="file" id="submissionFile" hidden>
+                                        <i class="fa-solid fa-plus me-2"></i> Añadir
+                                        <input type="file" id="submissionFile" name="archivo_entrega" hidden accept="*/*">
                                     </label>
                                     <div id="fileNameDisplay" class="small text-muted mt-2 text-center"></div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="comentarioAlumno" class="form-label">Comentario privado (opcional)</label>
                                     <textarea class="form-control" id="comentarioAlumno" rows="3" placeholder="Añade un comentario privado para tu profesor..."></textarea>
+                                    <div class="d-flex gap-2 mt-2">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="startVoiceDictation('comentarioAlumno', this)">Dictar comentario</button>
+                                        <label class="btn btn-outline-secondary btn-sm mb-0">
+                                            Transcribir audio
+                                            <input type="file" id="submissionCommentAudio" hidden accept="audio/*" onchange="transcribeAudioFileToField('comentarioAlumno', 'submissionCommentAudio', 'anuncios')">
+                                        </label>
+                                    </div>
                                 </div>
                                 <button type="button" class="btn btn-primary w-100 py-2" onclick="submitTask('<%= tarea.id %>')">Entregar tarea</button>
                             </form>
