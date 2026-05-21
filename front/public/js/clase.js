@@ -368,3 +368,42 @@ async function uploadClassBanner(classId, event) {
         showError('Error de conexión', 'No se pudo conectar con el servidor');
     }
 }
+
+async function transcribeAnnouncementFile() {
+    const fileInput = document.getElementById('postFile');
+    const contentEl = document.getElementById('postContent');
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert('Selecciona un archivo de audio primero');
+        return;
+    }
+    const file = fileInput.files[0];
+    if (!file.type.startsWith('audio/')) {
+        alert('El archivo seleccionado no parece ser audio');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('bucket', 'anuncios');
+
+    try {
+        const res = await fetch('/api/integrations/transcribe-upload', {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+        });
+        const json = await res.json();
+        if (!res.ok) {
+            alert(json.error || 'No se pudo transcribir');
+            return;
+        }
+        if (json.transcript) {
+            // append transcript to content
+            contentEl.value = (contentEl.value ? contentEl.value + "\n\n" : "") + json.transcript;
+            alert('Transcripción añadida al contenido');
+        }
+    } catch (err) {
+        console.error('Transcribe error:', err);
+        alert('Error al transcribir audio');
+    }
+}

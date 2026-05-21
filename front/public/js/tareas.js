@@ -346,3 +346,34 @@ async function deleteUnit(unitId) {
         }
     });
 }
+
+async function detectAssignmentCompletion() {
+    const instructions = document.getElementById('taskInstructions')?.value || '';
+    const resultEl = document.getElementById('aiCompletionResult');
+    if (!instructions) {
+        resultEl.textContent = 'Escribe las instrucciones primero';
+        return;
+    }
+    if (instructions.length > 5000) {
+        resultEl.textContent = 'Texto demasiado largo (límite 5000 caracteres)';
+        return;
+    }
+    resultEl.textContent = 'Analizando...';
+    try {
+        const res = await fetch('/api/integrations/sapling', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ text: instructions })
+        });
+        const json = await res.json();
+        if (!res.ok) {
+            resultEl.textContent = json.error || 'Error en análisis';
+            return;
+        }
+        resultEl.textContent = `IA: ${json.percent}% hecho`;
+    } catch (err) {
+        console.error('Sapling detect error:', err);
+        resultEl.textContent = 'Error al analizar con IA';
+    }
+}
