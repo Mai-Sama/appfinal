@@ -105,10 +105,11 @@ exports.saplingAnalyze = async (req, res) => {
             return res.status(400).json({ error: 'Límite de 5000 caracteres excedido' });
         }
 
-        const saplingUrl = process.env.SAPLING_API_URL; // optional
+        const defaultSaplingUrl = 'https://api.sapling.ai/api/v1/aidetect';
+        let saplingUrl = process.env.SAPLING_API_URL || defaultSaplingUrl;
         const saplingKey = process.env.SAPLING_API_KEY;
 
-        if (!saplingKey || !saplingUrl) {
+        if (!saplingKey) {
             const lenScore = Math.min(1, payloadText.length / 5000);
             const keywords = ['hecho', 'completo', 'terminado', 'finalizado', 'listo'];
             let kscore = 0;
@@ -116,6 +117,11 @@ exports.saplingAnalyze = async (req, res) => {
             keywords.forEach(k => { if (lower.includes(k)) kscore += 0.2; });
             const percent = Math.round(Math.min(100, (lenScore * 70 + kscore * 100)));
             return res.json({ percent });
+        }
+
+        if (/\/v1\/annotate/i.test(saplingUrl)) {
+            console.warn('Sapling API URL deprecado detectado, usando endpoint de detector en su lugar.');
+            saplingUrl = defaultSaplingUrl;
         }
 
         try {
