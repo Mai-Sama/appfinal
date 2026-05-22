@@ -24,13 +24,19 @@ exports.createPost = async (req, res) => {
                     });
 
                 if (uploadError) {
-                    console.warn('No se pudo subir archivo del anuncio:', uploadError.message);
-                } else {
-                    const { data: publicUrlData } = supabase.storage.from('anuncios').getPublicUrl(fileName);
-                    archivo_adjunto_url = publicUrlData?.publicUrl || publicUrlData?.publicURL || `${process.env.SUPABASE_URL}/storage/v1/object/public/anuncios/${fileName}`;
+                    console.error('No se pudo subir archivo del anuncio:', uploadError.message);
+                    return res.status(500).json({ error: 'No se pudo subir el archivo adjunto del anuncio' });
                 }
+
+                const { data: publicUrlData, error: publicUrlError } = supabase.storage.from('anuncios').getPublicUrl(fileName);
+                if (publicUrlError) {
+                    console.warn('No se pudo obtener la URL pública del anuncio:', publicUrlError.message);
+                }
+
+                archivo_adjunto_url = publicUrlData?.publicUrl || publicUrlData?.publicURL || `${process.env.SUPABASE_URL}/storage/v1/object/public/anuncios/${fileName}`;
             } catch (uploadErr) {
-                console.warn('Error al subir archivo del anuncio:', uploadErr.message);
+                console.error('Error al subir archivo del anuncio:', uploadErr.message);
+                return res.status(500).json({ error: 'Error al subir el archivo adjunto del anuncio' });
             }
         }
 

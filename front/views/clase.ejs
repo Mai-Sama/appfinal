@@ -266,8 +266,35 @@
                                                     <% } %>
                                                 </div>
                                                 <p class="small text-muted mb-0"><%= post.descripcion || post.contenido || '' %></p>
-                                                <% if (post.archivo_url) { %>
-                                                    <p class="small mb-0 mt-2"><a href="<%= post.archivo_url %>" target="_blank" class="link-primary">Ver archivo adjunto</a></p>
+                                                <% if (post.archivo_url) {
+                                                    const archivoUrl = post.archivo_url;
+                                                    const lowerUrl = archivoUrl.toLowerCase();
+                                                    const isImage = lowerUrl.match(/\.(jpg|jpeg|png|gif|webp|bmp)$/);
+                                                    const isPdf = lowerUrl.endsWith('.pdf');
+                                                    const isAudio = lowerUrl.match(/\.(mp3|wav|ogg|m4a)$/);
+                                                    const isVideo = lowerUrl.match(/\.(mp4|webm|ogg|mov)$/);
+                                                %>
+                                                    <div class="mt-3">
+                                                        <div class="small text-muted">Archivo adjunto</div>
+                                                        <a href="<%= archivoUrl %>" target="_blank" class="link-primary d-block mb-2">Abrir archivo</a>
+                                                        <% if (isImage) { %>
+                                                            <img src="<%= archivoUrl %>" alt="Archivo adjunto" class="img-fluid rounded" style="max-height:220px;">
+                                                        <% } else if (isPdf) { %>
+                                                            <div class="ratio ratio-16x9">
+                                                                <iframe src="<%= archivoUrl %>" frameborder="0"></iframe>
+                                                            </div>
+                                                        <% } else if (isAudio) { %>
+                                                            <audio controls class="w-100">
+                                                                <source src="<%= archivoUrl %>">
+                                                                Tu navegador no soporta audio.
+                                                            </audio>
+                                                        <% } else if (isVideo) { %>
+                                                            <video controls class="w-100 rounded" style="max-height:260px;">
+                                                                <source src="<%= archivoUrl %>">
+                                                                Tu navegador no soporta video.
+                                                            </video>
+                                                        <% } %>
+                                                    </div>
                                                 <% } %>
                                             </div>
                                         </div>
@@ -380,8 +407,35 @@
                                                 <% } %>
                                             </div>
                                             <p class="small text-muted mb-0"><%= post.descripcion || post.contenido || '' %></p>
-                                            <% if (post.archivo_url) { %>
-                                                <p class="small mb-0 mt-2"><a href="<%= post.archivo_url %>" target="_blank" class="link-primary">Ver archivo adjunto</a></p>
+                                            <% if (post.archivo_url) {
+                                                const archivoUrl = post.archivo_url;
+                                                const lowerUrl = archivoUrl.toLowerCase();
+                                                const isImage = lowerUrl.match(/\.(jpg|jpeg|png|gif|webp|bmp)$/);
+                                                const isPdf = lowerUrl.endsWith('.pdf');
+                                                const isAudio = lowerUrl.match(/\.(mp3|wav|ogg|m4a)$/);
+                                                const isVideo = lowerUrl.match(/\.(mp4|webm|ogg|mov)$/);
+                                            %>
+                                                <div class="mt-3">
+                                                    <div class="small text-muted">Archivo adjunto</div>
+                                                    <a href="<%= archivoUrl %>" target="_blank" class="link-primary d-block mb-2">Abrir archivo</a>
+                                                    <% if (isImage) { %>
+                                                        <img src="<%= archivoUrl %>" alt="Archivo adjunto" class="img-fluid rounded" style="max-height:220px;">
+                                                    <% } else if (isPdf) { %>
+                                                        <div class="ratio ratio-16x9">
+                                                            <iframe src="<%= archivoUrl %>" frameborder="0"></iframe>
+                                                        </div>
+                                                    <% } else if (isAudio) { %>
+                                                        <audio controls class="w-100">
+                                                            <source src="<%= archivoUrl %>">
+                                                            Tu navegador no soporta audio.
+                                                        </audio>
+                                                    <% } else if (isVideo) { %>
+                                                        <video controls class="w-100 rounded" style="max-height:260px;">
+                                                            <source src="<%= archivoUrl %>">
+                                                            Tu navegador no soporta video.
+                                                        </video>
+                                                    <% } %>
+                                                </div>
                                             <% } %>
                                         </div>
                                     </div>
@@ -629,8 +683,35 @@
                                         <% } %>
                                     </div>
                                     <p class="small text-muted mb-0"><%= post.descripcion || post.contenido || '' %></p>
-                                    <% if (post.archivo_url) { %>
-                                        <p class="small mb-0 mt-2"><a href="<%= post.archivo_url %>" target="_blank" class="link-primary">Ver archivo adjunto</a></p>
+                                    <% if (post.archivo_url) {
+                                        const archivoUrl = post.archivo_url;
+                                        const lowerUrl = archivoUrl.toLowerCase();
+                                        const isImage = lowerUrl.match(/\.(jpg|jpeg|png|gif|webp|bmp)$/);
+                                        const isPdf = lowerUrl.endsWith('.pdf');
+                                        const isAudio = lowerUrl.match(/\.(mp3|wav|ogg|m4a)$/);
+                                        const isVideo = lowerUrl.match(/\.(mp4|webm|ogg|mov)$/);
+                                    %>
+                                        <div class="mt-3">
+                                            <div class="small text-muted">Archivo adjunto</div>
+                                            <a href="<%= archivoUrl %>" target="_blank" class="link-primary d-block mb-2">Abrir archivo</a>
+                                            <% if (isImage) { %>
+                                                <img src="<%= archivoUrl %>" alt="Archivo adjunto" class="img-fluid rounded" style="max-height:220px;">
+                                            <% } else if (isPdf) { %>
+                                                <div class="ratio ratio-16x9">
+                                                    <iframe src="<%= archivoUrl %>" frameborder="0"></iframe>
+                                                </div>
+                                            <% } else if (isAudio) { %>
+                                                <audio controls class="w-100">
+                                                    <source src="<%= archivoUrl %>">
+                                                    Tu navegador no soporta audio.
+                                                </audio>
+                                            <% } else if (isVideo) { %>
+                                                <video controls class="w-100 rounded" style="max-height:260px;">
+                                                    <source src="<%= archivoUrl %>">
+                                                    Tu navegador no soporta video.
+                                                </video>
+                                            <% } %>
+                                        </div>
                                     <% } %>
                                 </div>
                             </div>
