@@ -8,6 +8,8 @@ router.post('/transcribe-url', integrationController.transcribeFromUrl);
 
 router.post('/transcribe-upload', upload.single('file'), integrationController.transcribeUpload);
 
-router.post('/sapling', integrationController.saplingAnalyze);
+router.route('/sapling')
+    .get((req, res) => res.status(405).json({ error: 'Usa POST /api/integrations/sapling' }))
+    .post(integrationController.saplingAnalyze);
 
 module.exports = router;
