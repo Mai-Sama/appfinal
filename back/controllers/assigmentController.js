@@ -334,7 +334,18 @@ exports.cancelSubmission = async (req, res) => {
         }
 
         if (entrega.calificacion !== null && entrega.calificacion !== undefined) {
-            return res.status(400).json({ error: "No puedes anular una entrega que ya ha sido calificada" });
+            const { error: resetError } = await supabase
+                .from('entregas')
+                .update({
+                    calificacion: null,
+                    comentario_profesor: null,
+                    estado: 'entregado'
+                })
+                .eq('id', id);
+
+            if (resetError) throw resetError;
+
+            return res.json({ message: "Entrega anulada y calificación eliminada correctamente" });
         }
 
         const { error: deleteError } = await supabase
