@@ -93,10 +93,6 @@ function verDetalleEntrega(alumno) {
             <textarea id="comentarioProfesor" class="form-control mb-4" rows="3" placeholder="Escribe tu comentario privado para el alumno...">${alumno.entrega.comentario_profesor || ''}</textarea>
             <div class="d-flex gap-2 mb-4">
                 <button class="btn btn-outline-secondary btn-sm" type="button" onclick="startVoiceDictation('comentarioProfesor', this)">Dictar comentario</button>
-                <label class="btn btn-outline-secondary btn-sm mb-0">
-                    Transcribir audio
-                    <input type="file" id="profesorCommentAudio" hidden accept="audio/*" onchange="transcribeAudioFileToField('comentarioProfesor', 'profesorCommentAudio', 'anuncios')">
-                </label>
                 <button class="btn btn-outline-info btn-sm" type="button" id="saplingAnalyzeBtn" onclick="analyzeCommentWithSapling('comentarioProfesor', this)">Detectar % hecha (IA)</button>
                 <span id="saplingResult" class="small text-muted ms-2"></span>
             </div>

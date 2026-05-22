@@ -131,8 +131,8 @@
                     <div class="mb-3">
                         <label for="postFile" class="form-label">Adjuntar archivo (opcional)</label>
                         <input type="file" id="postFile" class="form-control" accept="image/*,audio/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-                        <div class="mt-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary" id="transcribePostBtn" onclick="transcribeAnnouncementFile()">Transcribir audio</button>
+                        <div class="mt-2 d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="startVoiceDictation('postContent', this)">Dictar comentario</button>
                         </div>
                     </div>
                 </div>
