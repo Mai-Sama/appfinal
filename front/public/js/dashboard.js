@@ -80,6 +80,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    const selectedSection = document.body.dataset.selectedSection;
+    if (selectedSection === 'calendar') {
+        loadPendingAssignments();
+    } else if (selectedSection === 'submissions') {
+        loadStudentSubmissions();
+    }
+
 });
 
 function escapeHtml(text) {

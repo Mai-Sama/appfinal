@@ -59,8 +59,8 @@
         <ul class="sidebar-menu">
             <li>Realiza click en el boton deseado para ir a donde desees:</li>
             <li><a href="/dashboard" class="sidebar-link active"><i class="fa-solid fa-graduation-cap me-3"></i>Mis clases</a></li>
-            <li><a href="/clase/<%= clase.id %>/tareas" class="sidebar-link"><i class="fa-solid fa-clipboard-list me-3"></i>Tareas</a></li>
-            <li><a href="/clase/<%= clase.id %>/entregadas" class="sidebar-link"><i class="fa-solid fa-clipboard-check me-3"></i>Entregadas</a></li>
+            <li><a href="/dashboard?section=calendar" class="sidebar-link"><i class="fa-solid fa-clipboard-list me-3"></i>Tareas</a></li>
+            <li><a href="/dashboard?section=submissions" class="sidebar-link"><i class="fa-solid fa-clipboard-check me-3"></i>Entregadas</a></li>
             <li><a href="/mis-reportes" class="sidebar-link"><i class="fa-solid fa-headset me-3"></i>Mis reportes</a></li>
         </ul>
         <div class="sidebar-footer">
@@ -195,9 +195,11 @@
                                                             <p class="mb-0 text-muted"><%= post.descripcion || 'Revisa los detalles de la tarea aquí.' %></p>
                                                         </div>
                                                         <div class="d-flex align-items-center gap-2">
-                                                            <% if (isProfesor || (user && post.creador_id === user.id)) { %>                                                                <button type="button" class="btn btn-sm btn-outline-warning rounded-pill" onclick="event.stopPropagation(); editAssignment('<%= post.id %>', '<%= clase.id %>', '<%= post.unidad_id || '' %>')">Asignar a unidad</button>
+                                                            <% if (isProfesor || (user && post.creador_id === user.id)) { %>
+                                                                <button type="button" class="btn btn-sm btn-outline-warning rounded-pill" data-unit-id="<%= post.unidad_id || '' %>" onclick="event.stopPropagation(); editAssignment('<%= post.id %>', '<%= clase.id %>', this.dataset.unitId)">Asignar a unidad</button>
                                                             <% } %>
-                                                            <% if (isProfesor || (user && post.creador_id === user.id)) { %>                                                                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" onclick="event.stopPropagation(); deleteAssignment('<%= post.id %>')">Eliminar</button>
+                                                            <% if (isProfesor || (user && post.creador_id === user.id)) { %>
+                                                                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" onclick="event.stopPropagation(); deleteAssignment('<%= post.id %>')">Eliminar</button>
                                                             <% } %>
                                                             <span class="btn btn-sm btn-primary rounded-pill">Ir</span>
                                                         </div>
@@ -222,7 +224,7 @@
                                                         </div>
                                                         <div class="d-flex align-items-center gap-2">
                                                             <% if (isProfesor || (user && post.creador_id === user.id)) { %>
-                                                                <button type="button" class="btn btn-sm btn-outline-warning rounded-pill" onclick="event.stopPropagation(); editAssignment('<%= post.id %>', '<%= clase.id %>', '<%= post.unidad_id || '' %>')">Asignar a unidad</button>
+                                                                <button type="button" class="btn btn-sm btn-outline-warning rounded-pill" data-unit-id="<%= post.unidad_id || '' %>" onclick="event.stopPropagation(); editAssignment('<%= post.id %>', '<%= clase.id %>', this.dataset.unitId)">Asignar a unidad</button>
                                                             <% } %>
                                                             <% if (isProfesor || (user && post.creador_id === user.id)) { %>
                                                                 <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" onclick="event.stopPropagation(); deleteAssignment('<%= post.id %>')">Eliminar</button>

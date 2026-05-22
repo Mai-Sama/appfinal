@@ -90,9 +90,11 @@ app.get('/dashboard', authenticateToken, async (req, res) => {
             isProfesor: item.clases.profesor_id === user.id
         }));
 
+        const selectedSection = req.query.section || 'classes';
         res.render('dashboard', { 
             user: user, 
-            clases: listaClases || [] 
+            clases: listaClases || [],
+            selectedSection
         });
 
     } catch (error) {
@@ -535,6 +537,15 @@ app.get('/clase/:id/tareas', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error('Error al cargar tareas:', error);
         res.status(500).send("Error al cargar tareas");
+    }
+});
+
+app.get('/clase/:id/entregadas', authenticateToken, async (req, res) => {
+    try {
+        res.redirect('/dashboard?section=submissions');
+    } catch (error) {
+        console.error('Error redirigiendo a entregadas:', error);
+        res.status(500).send('Error al redirigir a Mis entregas');
     }
 });
 
