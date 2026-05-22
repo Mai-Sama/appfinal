@@ -1,8 +1,13 @@
 async function createPost(claseId) {
     const contenido = document.getElementById('postContent')?.value.trim();
     const archivoInput = document.getElementById('postFile');
+    const tieneArchivo = archivoInput?.files?.length > 0;
+    const tieneContenido = contenido.length > 0;
 
-    if (!validateNotEmpty(contenido, 'El contenido')) return;
+    if (!tieneContenido && !tieneArchivo) {
+        showError('Error al publicar', 'Debes escribir texto o adjuntar un archivo antes de publicar.');
+        return;
+    }
 
     showLoading('Publicando anuncio', 'Por favor espere...');
 
