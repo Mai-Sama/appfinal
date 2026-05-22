@@ -15,21 +15,23 @@ function verDetalleEntrega(alumno) {
     let archivoHtml = '';
     if (alumno.entrega.archivo_entrega_url) {
         const url = alumno.entrega.archivo_entrega_url;
+        const fallbackFileName = alumno.entrega.nombre_archivo || url.split('/').pop().split('?')[0] || 'Archivo entregado';
         const isPdf = url.toLowerCase().includes('.pdf') || url.includes('application/pdf');
         const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
         const isAudio = /\.(mp3|m4a|wav|ogg|webm|aac)$/i.test(url);
-        const fallbackFileName = alumno.entrega.nombre_archivo || url.split('/').pop().split('?')[0] || 'Descargar archivo';
-        
+        const isVideo = /\.(mp4|webm|ogg)$/i.test(url);
+        const isText = /\.(txt|md|csv|json|js|html|htm|xml)$/i.test(url);
+
         if (isPdf) {
             archivoHtml = `
                 <div class="border rounded mb-3 bg-white">
-                    <iframe src="${url}" style="width: 100%; height: 500px; border: none; border-radius: 4px;"></iframe>
+                    <iframe src="${url}" style="width: 100%; height: 600px; border: none; border-radius: 4px;"></iframe>
                 </div>
             `;
         } else if (isImage) {
             archivoHtml = `
                 <div class="border rounded mb-3 bg-white p-3 text-center">
-                    <img src="${url}" alt="Archivo entregado" style="max-width: 100%; max-height: 500px; border-radius: 4px;">
+                    <img src="${url}" alt="Archivo entregado" style="max-width: 100%; max-height: 600px; border-radius: 4px;">
                 </div>
             `;
         } else if (isAudio) {
@@ -41,6 +43,23 @@ function verDetalleEntrega(alumno) {
                     </audio>
                     <div class="mt-2"><a href="${url}" target="_blank" class="submission-file-link">${fallbackFileName}</a></div>
                 </div>
+            `;
+        } else if (isVideo) {
+            archivoHtml = `
+                <div class="border rounded mb-3 bg-white p-3 text-center">
+                    <video controls style="width:100%; max-height: 600px;">
+                        <source src="${url}">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
+                    <div class="mt-2"><a href="${url}" target="_blank" class="submission-file-link">${fallbackFileName}</a></div>
+                </div>
+            `;
+        } else if (isText) {
+            archivoHtml = `
+                <div class="border rounded mb-3 bg-white p-3" style="max-height: 600px; overflow:auto;">
+                    <iframe src="${url}" style="width: 100%; height: 100%; border: none;"></iframe>
+                </div>
+                <div class="text-end mt-2"><a href="${url}" target="_blank" class="submission-file-link">${fallbackFileName}</a></div>
             `;
         } else {
             archivoHtml = `
