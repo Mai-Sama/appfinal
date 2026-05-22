@@ -27,12 +27,14 @@ function verDetalleEntrega(alumno) {
                 <div class="border rounded mb-3 bg-white">
                     <iframe src="${url}" style="width: 100%; height: 600px; border: none; border-radius: 4px;"></iframe>
                 </div>
+                <div class="text-end mt-2"><a href="${url}" target="_blank" class="submission-file-link">${fallbackFileName}</a></div>
             `;
         } else if (isImage) {
             archivoHtml = `
                 <div class="border rounded mb-3 bg-white p-3 text-center">
                     <img src="${url}" alt="Archivo entregado" style="max-width: 100%; max-height: 600px; border-radius: 4px;">
                 </div>
+                <div class="text-end mt-2"><a href="${url}" target="_blank" class="submission-file-link">${fallbackFileName}</a></div>
             `;
         } else if (isAudio) {
             archivoHtml = `
