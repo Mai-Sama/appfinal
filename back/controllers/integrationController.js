@@ -88,18 +88,31 @@ exports.transcribeUpload = async (req, res) => {
 
 exports.saplingAnalyze = async (req, res) => {
     try {
-        const { text } = req.body || {};
-        if (!text) return res.status(400).json({ error: 'Se requiere `text` en body' });
-        if (text.length > 5000) return res.status(400).json({ error: 'Límite de 5000 caracteres excedido' });
+        const { text, fileUrl } = req.body || {};
+        if ((!text || !text.trim()) && (!fileUrl || !fileUrl.trim())) {
+            return res.status(400).json({ error: 'Se requiere `text` o `fileUrl` en body' });
+        }
+
+        let payloadText = (text || '').trim();
+        if (!payloadText && fileUrl) {
+            const supportedExtensions = /(\.txt|\.pdf|\.doc|\.docx|\.ppt|\.pptx)$/i;
+            if (!supportedExtensions.test(fileUrl)) {
+                return res.status(400).json({ error: 'Solo se pueden analizar archivos .txt, .pdf, .doc/.docx y .ppt/.pptx' });
+            }
+            payloadText = `Analiza este archivo adjunto para detectar contenido generado por IA: ${fileUrl}`;
+        }
+        if (payloadText.length > 5000) {
+            return res.status(400).json({ error: 'Límite de 5000 caracteres excedido' });
+        }
 
         const saplingUrl = process.env.SAPLING_API_URL; // optional
         const saplingKey = process.env.SAPLING_API_KEY;
 
         if (!saplingKey || !saplingUrl) {
-            const lenScore = Math.min(1, text.length / 5000);
+            const lenScore = Math.min(1, payloadText.length / 5000);
             const keywords = ['hecho', 'completo', 'terminado', 'finalizado', 'listo'];
             let kscore = 0;
-            const lower = text.toLowerCase();
+            const lower = payloadText.toLowerCase();
             keywords.forEach(k => { if (lower.includes(k)) kscore += 0.2; });
             const percent = Math.round(Math.min(100, (lenScore * 70 + kscore * 100)));
             return res.json({ percent });
@@ -112,7 +125,7 @@ exports.saplingAnalyze = async (req, res) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${saplingKey}`
                 },
-                body: JSON.stringify({ text })
+                body: JSON.stringify({ text: payloadText })
             });
 
             if (!r.ok) {

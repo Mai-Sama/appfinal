@@ -124,20 +124,27 @@ async function analyzeCommentWithSapling(fieldId, btn) {
     const fileLink = document.querySelector('.submission-file-link');
     if ((!text || !text.trim()) && fileLink && fileLink.href) {
         const fileUrl = fileLink.href;
-        if (/\.(txt|md|csv|json|js|html|htm|xml)$/i.test(fileUrl)) {
-            try {
-                const fileResponse = await fetch(fileUrl, { credentials: 'include' });
-                if (fileResponse.ok) {
-                    text = await fileResponse.text();
+        const supportedExtensions = /\.(txt|pdf|doc|docx|ppt|pptx)$/i;
+        if (supportedExtensions.test(fileUrl)) {
+            if (/\.(txt)$/i.test(fileUrl)) {
+                try {
+                    const fileResponse = await fetch(fileUrl, { credentials: 'include' });
+                    if (fileResponse.ok) {
+                        text = await fileResponse.text();
+                    }
+                } catch (err) {
+                    console.warn('No se pudo leer el archivo del alumno para IA:', err);
                 }
-            } catch (err) {
-                console.warn('No se pudo leer el archivo del alumno para IA:', err);
+            } else {
+                text = `Analiza este archivo adjunto para detectar posible contenido generado por IA: ${fileUrl}`;
             }
+        } else {
+            return showError('Archivo no compatible', 'Solo se pueden analizar archivos .txt, .pdf, .doc/.docx y .ppt/.pptx.');
         }
     }
 
     if (!text || text.trim().length === 0) {
-        return showError('Texto requerido', 'No hay texto para analizar. Añade un comentario o sube un archivo de texto.');
+        return showError('Texto requerido', 'No hay texto para analizar. Añade un comentario o sube un archivo compatible.');
     }
     const resultSpan = document.getElementById('saplingResult');
     btn.disabled = true;
