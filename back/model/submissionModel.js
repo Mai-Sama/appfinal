@@ -10,10 +10,6 @@ class SubmissionModel {
             fecha_envio: new Date()
         };
 
-        if (submissionData.nombre_archivo) {
-            insertObj.nombre_archivo = submissionData.nombre_archivo;
-        }
-
         const { data, error } = await supabase
             .from('entregas')
             .insert([insertObj])

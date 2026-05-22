@@ -140,12 +140,12 @@ async function createUnit(claseId) {
 
         if (response.ok) {
             await showSuccess('¡Unidad creada!', 'La unidad ha sido creada correctamente');
-            // Cerrar modal
+
             const modal = bootstrap.Modal.getInstance(document.getElementById('createUnitModal'));
             modal?.hide();
-            // Limpiar formulario
+
             document.getElementById('unitForm').reset();
-            // Recargar unidades
+
             loadUnitsForClass(claseId);
         } else {
             const errorData = await response.json();

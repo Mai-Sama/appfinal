@@ -56,7 +56,7 @@ exports.transcribeUpload = async (req, res) => {
         if (uploadError) {
             console.warn('Supabase upload error (transcribe):', uploadError);
 
-            // If file already exists, retry with upsert to avoid collisions
+
             if (uploadError?.status === 409 || uploadError?.message?.includes('already exists')) {
                 const { error: retryError } = await supabase.storage.from(bucket).upload(fileName, req.file.buffer, { contentType: req.file.mimetype, upsert: true });
                 if (retryError) {

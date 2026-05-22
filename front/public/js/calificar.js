@@ -18,6 +18,7 @@ function verDetalleEntrega(alumno) {
         const isPdf = url.toLowerCase().includes('.pdf') || url.includes('application/pdf');
         const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
         const isAudio = /\.(mp3|m4a|wav|ogg|webm|aac)$/i.test(url);
+        const fallbackFileName = alumno.entrega.nombre_archivo || url.split('/').pop().split('?')[0] || 'Descargar archivo';
         
         if (isPdf) {
             archivoHtml = `
@@ -38,14 +39,14 @@ function verDetalleEntrega(alumno) {
                         <source src="${url}">
                         Tu navegador no soporta la reproducción de audio.
                     </audio>
-                    <div class="mt-2"><a href="${url}" target="_blank" class="submission-file-link">${alumno.entrega.nombre_archivo || 'Descargar audio'}</a></div>
+                    <div class="mt-2"><a href="${url}" target="_blank" class="submission-file-link">${fallbackFileName}</a></div>
                 </div>
             `;
         } else {
             archivoHtml = `
                 <div class="border rounded p-3 bg-light mb-3">
                     <i class="fa-solid fa-file me-2"></i>
-                    <a href="${url}" target="_blank" class="text-decoration-none submission-file-link">${alumno.entrega.nombre_archivo || 'Descargar archivo'}</a>
+                    <a href="${url}" target="_blank" class="text-decoration-none submission-file-link">${fallbackFileName}</a>
                 </div>
             `;
         }
