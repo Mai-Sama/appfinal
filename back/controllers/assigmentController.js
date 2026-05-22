@@ -333,21 +333,6 @@ exports.cancelSubmission = async (req, res) => {
             return res.status(403).json({ error: "No tienes permiso para anular esta entrega" });
         }
 
-        if (entrega.calificacion !== null && entrega.calificacion !== undefined) {
-            const { error: resetError } = await supabase
-                .from('entregas')
-                .update({
-                    calificacion: null,
-                    comentario_profesor: null,
-                    estado: 'entregado'
-                })
-                .eq('id', id);
-
-            if (resetError) throw resetError;
-
-            return res.json({ message: "Entrega anulada y calificación eliminada correctamente" });
-        }
-
         const { error: deleteError } = await supabase
             .from('entregas')
             .delete()
