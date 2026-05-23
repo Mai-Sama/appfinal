@@ -38,7 +38,7 @@ async function createPost(claseId) {
 }
 
 function switchSection(section) {
-    const sections = ['tasks', 'personas', 'rendimiento'];
+    const sections = ['tasks', 'personas', 'rendimiento', 'rubrics'];
 
     sections.forEach(name => {
         const el = document.getElementById(`section${name.charAt(0).toUpperCase() + name.slice(1)}`);
@@ -55,10 +55,15 @@ function switchSection(section) {
         showTaskView('overview');
     }
 
+    if (section === 'rubrics') {
+        loadAllRubrics();
+    }
+
     const buttons = {
         tasks: 'tabTasksBtn',
         personas: 'tabPersonasBtn',
-        rendimiento: 'tabRendimientoBtn'
+        rendimiento: 'tabRendimientoBtn',
+        rubrics: 'tabRubricsBtn'
     };
 
     Object.entries(buttons).forEach(([name, id]) => {

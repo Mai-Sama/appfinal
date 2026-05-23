@@ -107,6 +107,9 @@
             <div class="btn-group" role="group" aria-label="Secciones de clase">
                 <button id="tabTasksBtn" type="button" class="btn btn-outline-secondary active" onclick="switchSection('tasks')">Tareas</button>
                 <button id="tabPersonasBtn" type="button" class="btn btn-outline-secondary" onclick="switchSection('personas')">Personas</button>
+                <% if (isProfesor) { %>
+                    <button id="tabRubricsBtn" type="button" class="btn btn-outline-secondary" onclick="switchSection('rubrics')">Rúbricas</button>
+                <% } %>
             </div>
         </div>
 
@@ -639,6 +642,38 @@
                 </div>
             </div>
         </div>
+
+        <div id="sectionRubrics" class="d-none">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-4 gap-3">
+                        <div>
+                            <h2 class="h5 fw-bold mb-1">Rúbricas estándar</h2>
+                            <p class="mb-0 text-muted">Gestiona los criterios de calificación reusables.</p>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#rubricModal" onclick="setTimeout(loadAllRubrics, 300)">
+                            <i class="fa-solid fa-plus me-2"></i> Nueva rúbrica
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Criterio</th>
+                                    <th>Descripción</th>
+                                    <th class="text-center">Puntos máximos</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rubricsTableBody">
+                                <tr><td colspan="4" class="text-center text-muted py-4">Cargando rúbricas...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -650,9 +685,21 @@
     <script src="/public/js/support.js"></script>
     <script src="/public/js/calificar.js"></script>
     <script src="/public/js/tareas.js"></script>
+    <script src="/public/js/rubrics.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('createAssignmentModal');
+            if (modal) {
+                modal.addEventListener('shown.bs.modal', function() {
+                    loadRubricsForAssignment();
+                });
+            }
+        });
+    </script>
     <script src="/public/js/entrega.js"></script>
     <%- include('modals/assigmentModal') %>
     <%- include('modals/classModals') %>
     <%- include('modals/supportModal') %>
+    <%- include('modals/rubricModal') %>
 </body>
 </html>

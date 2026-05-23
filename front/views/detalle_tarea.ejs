@@ -141,6 +141,7 @@
                                         </div>
                                     <% } %>
                                 </div>
+                                <div id="studentRubricGradesContainer" class="mt-3"></div>
                             <% } %>
                             <% if (entrega.comentario_alumno) { %>
                                 <div class="mt-3 p-2 bg-light border-start border-info rounded">
@@ -177,5 +178,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/public/js/swal-utils.js"></script>
     <script src="/public/js/entrega.js"></script>
+    <script src="/public/js/rubrics.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const entregaId = '<%= entrega?.id %>';
+            if (entregaId && typeof loadStudentRubricGrades === 'function') {
+                loadStudentRubricGrades(entregaId);
+            }
+        });
+    </script>
 </body>
 </html>

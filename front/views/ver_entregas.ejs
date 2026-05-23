@@ -53,5 +53,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/public/js/swal-utils.js"></script>
     <script src="/public/js/calificar.js"></script>
+    <script src="/public/js/rubrics.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tareaId = '<%= tarea.id %>';
+            if (tareaId) {
+                loadRubricsForGrading(tareaId);
+            }
+        });
+    </script>
 </body>
 </html>

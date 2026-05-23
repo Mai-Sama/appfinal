@@ -102,6 +102,8 @@ function verDetalleEntrega(alumno) {
             <h6 class="fw-bold mb-3">Archivo entregado:</h6>
             ${archivoHtml}
 
+            <div id="rubricGradingContainer" style="display: none;"></div>
+
             ${alumno.entrega.comentario_alumno ? `
                 <h6 class="fw-bold mt-4 mb-3">Comentario del alumno:</h6>
                 <div class="border-start border-info rounded p-3 bg-light">
@@ -110,6 +112,13 @@ function verDetalleEntrega(alumno) {
             ` : ''}
         </div>
     `;
+
+    // Cargar rúbricas para esta tarea
+    const tareaId = new URLSearchParams(window.location.search).get('tareaId') || 
+                    document.querySelector('[data-tarea-id]')?.dataset.tareaId;
+    if (tareaId && typeof loadRubricsForGrading === 'function') {
+        setTimeout(() => loadRubricsForGrading(tareaId), 200);
+    }
 }
 
 async function analyzeCommentWithSapling(fieldId, btn) {
@@ -197,6 +206,10 @@ async function guardarNota(entregaId, puntoMaximo) {
         });
 
         if (response.ok) {
+            const rubricInputs = document.querySelectorAll('.rubric-grade-input');
+            if (rubricInputs.length > 0 && typeof saveRubricGrades === 'function') {
+                await saveRubricGrades(entregaId);
+            }
             await showSuccess('Calificación guardada', 'La calificación y comentario han sido guardados correctamente');
             location.reload();
         } else {
