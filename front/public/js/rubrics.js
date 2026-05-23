@@ -1,4 +1,4 @@
-// Cargar todas las rúbricas estándar
+
 async function loadAllRubrics() {
     try {
         const response = await fetch('/api/rubrics', {
@@ -13,7 +13,7 @@ async function loadAllRubrics() {
     }
 }
 
-// Mostrar rúbricas en la tabla
+
 function displayRubrics(rubrics) {
     const tbody = document.getElementById('rubricsTableBody');
     if (!tbody) return;
@@ -40,7 +40,7 @@ function displayRubrics(rubrics) {
     `).join('');
 }
 
-// Crear nueva rúbrica
+
 async function createNewRubric() {
     const criterio = document.getElementById('newRubricCriterio')?.value;
     const descripcion = document.getElementById('newRubricDescripcion')?.value || '';
@@ -80,7 +80,7 @@ async function createNewRubric() {
     }
 }
 
-// Editar rúbrica
+
 function editRubric(id, criterio, descripcion, puntos) {
     document.getElementById('editRubricId').value = id;
     document.getElementById('editRubricCriterio').value = criterio;
@@ -92,7 +92,7 @@ function editRubric(id, criterio, descripcion, puntos) {
     }
 }
 
-// Guardar cambios de rúbrica
+
 async function saveRubricChanges() {
     const id = document.getElementById('editRubricId').value;
     const criterio = document.getElementById('editRubricCriterio').value;
@@ -128,7 +128,7 @@ async function saveRubricChanges() {
     }
 }
 
-// Eliminar rúbrica
+
 async function deleteRubric(id, criterio) {
     if (!confirm(`¿Estás seguro de que deseas eliminar la rúbrica "${criterio}"?`)) return;
 
@@ -150,7 +150,7 @@ async function deleteRubric(id, criterio) {
     }
 }
 
-// Cargar rúbricas estándar en el selector al crear tarea
+
 async function loadRubricsForAssignment() {
     try {
         const response = await fetch('/api/rubrics', {
@@ -181,7 +181,7 @@ async function loadRubricsForAssignment() {
     }
 }
 
-// Mostrar rúbricas en la calificación
+
 async function loadRubricsForGrading(tareaId) {
     try {
         const response = await fetch(`/api/rubrics/task/${tareaId}`, {
@@ -222,7 +222,7 @@ async function loadRubricsForGrading(tareaId) {
     }
 }
 
-// Guardar calificaciones por rúbrica
+
 async function saveRubricGrades(entregaId) {
     const inputs = document.querySelectorAll('.rubric-grade-input');
     const calificaciones = {};
@@ -265,7 +265,7 @@ async function saveRubricGrades(entregaId) {
     }
 }
 
-// Mostrar calificaciones a estudiantes
+
 async function loadStudentRubricGrades(entregaId) {
     try {
         const response = await fetch(`/api/rubrics/submission/${entregaId}`, {
