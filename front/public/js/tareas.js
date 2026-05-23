@@ -371,7 +371,13 @@ async function detectAssignmentCompletion() {
             resultEl.textContent = json.error || 'Error en análisis';
             return;
         }
-        resultEl.textContent = `IA: ${json.percent}% hecho`;
+        const rawPercent = Number(json.percent);
+        if (!Number.isFinite(rawPercent)) {
+            resultEl.textContent = 'IA: N/A';
+            return;
+        }
+        const displayPercent = rawPercent <= 1 ? rawPercent * 100 : rawPercent;
+        resultEl.textContent = `IA: ${displayPercent.toFixed(1)}% hecho`;
     } catch (err) {
         console.error('Sapling detect error:', err);
         resultEl.textContent = 'Error al analizar con IA';

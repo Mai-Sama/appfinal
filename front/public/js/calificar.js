@@ -94,8 +94,8 @@ function verDetalleEntrega(alumno) {
             <h6 class="fw-bold mb-3">Comentario privado del profesor:</h6>
             <textarea id="comentarioProfesor" class="form-control mb-4" rows="3" placeholder="Escribe tu comentario privado para el alumno...">${alumno.entrega.comentario_profesor || ''}</textarea>
             <div class="d-flex gap-2 mb-4">
-                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="startVoiceDictation('comentarioProfesor', this)">Dictar comentario</button>
-                <button class="btn btn-outline-info btn-sm" type="button" id="saplingAnalyzeBtn" onclick="analyzeCommentWithSapling('comentarioProfesor', this)">Detectar % hecha (IA)</button>
+                <button class="menu-button-sm" type="button" onclick="startVoiceDictation('comentarioProfesor', this)">Dictar comentario</button>
+                <button class="menu-button-sm" type="button" id="saplingAnalyzeBtn" onclick="analyzeCommentWithSapling('comentarioProfesor', this)">Detectar % hecha (IA)</button>
                 <span id="saplingResult" class="small text-muted ms-2"></span>
             </div>
 
@@ -163,11 +163,13 @@ async function analyzeCommentWithSapling(fieldId, btn) {
         if (!res.ok) {
             throw new Error(j.error || 'Error en análisis');
         }
-        const percent = j.percent || j.percent_complete || j.percent_complete || j.percentaje || j.percent;
-        if (percent === undefined || percent === null) {
-            resultSpan.textContent = `IA: ${j.percent || 'N/A'}%`;
+        const percent = j.percent ?? j.percent_complete ?? j.percentaje;
+        if (percent === undefined || percent === null || !Number.isFinite(Number(percent))) {
+            resultSpan.textContent = `IA: ${j.percent || j.percent_complete || j.percentaje || 'N/A'}%`;
         } else {
-            resultSpan.textContent = `IA: ${percent}% hecho`;
+            const rawPercent = Number(percent);
+            const displayPercent = rawPercent <= 1 ? rawPercent * 100 : rawPercent;
+            resultSpan.textContent = `IA: ${displayPercent.toFixed(1)}% hecho`;
         }
     } catch (err) {
         resultSpan.textContent = '';
